@@ -1,33 +1,38 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
-public class RenderFrustum : MonoBehaviour {
-	private Camera camera;
-	[SerializeField] private bool renderFrustum;
-
-    private static Material lineMat;
-
-    public bool IsRendering {
-		get { return this.renderFrustum; }
-	}
+public class RenderFrustum  {
     
-    // Use this for initialization
-    void Start () {
-		this.camera = GetComponentInChildren<Camera>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (this.renderFrustum && this.camera != null) {
-            DrawFrustum(camera);
-            DrawCoordinateSystem(this.transform.position, this.transform.rotation, 5);
-            DrawCoordinateSystem(Vector3.zero, Quaternion.identity, 5);
-            //Gizmos.DrawFrustum (Vector3.zero, camera.fieldOfView, camera.farClipPlane, camera.nearClipPlane, camera.aspect);
-        }
+    private static RenderFrustum instance;
+    private static Material lineMat;
+        
+    List<Edge> edges;
+
+    private struct Edge
+    {
+        public Vector3 start;
+        public Vector3 end;
+        public Color color;
     }
     
+    private static Material LineMaterial
+    {
+        get 
+        {
+            if (!lineMat)
+            {
+                Shader shader = Shader.Find("Hidden/Internal-Colored");
+                lineMat = new Material(shader);
+                lineMat.hideFlags = HideFlags.HideAndDontSave;
+                lineMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                lineMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                lineMat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+                lineMat.SetInt("_ZWrite", 0);
+            }
+            return lineMat;
+        }
+    }
+       
     public static void DrawFrustum(Camera cam)
     {
         Vector3[] nearCorners = new Vector3[4]; //Approx'd nearplane corners
@@ -42,9 +47,9 @@ public class RenderFrustum : MonoBehaviour {
         }
         for (int i = 0; i < 4; i++)
         {
-            Debug.DrawLine(nearCorners[i], nearCorners[(i + 1) % 4], Color.red, 0, true); //near corners on the created projection matrix
-            Debug.DrawLine(farCorners[i], farCorners[(i + 1) % 4], Color.blue, 0, true); //far corners on the created projection matrix
-            Debug.DrawLine(nearCorners[i], farCorners[i], Color.green, 0, true); //sides of the created projection matrix
+            DrawLine(nearCorners[i], nearCorners[(i + 1) % 4], Color.red); //near corners on the created projection matrix
+            DrawLine(farCorners[i], farCorners[(i + 1) % 4], Color.blue); //far corners on the created projection matrix
+            DrawLine(nearCorners[i], farCorners[i], Color.green); //sides of the created projection matrix
         }
     }
 
@@ -62,33 +67,15 @@ public class RenderFrustum : MonoBehaviour {
 
     public static void DrawCoordinateSystem(Vector3 position, Quaternion rotation, float size)
     {
-
-        RenderFrustum.DrawLine(position, position + rotation * Vector3.up * size, Color.green);
-        RenderFrustum.DrawLine(position, position + rotation * Vector3.right * size, Color.red);
-        RenderFrustum.DrawLine(position, position + rotation * Vector3.forward * size, Color.blue);
-        //GL.Begin(GL.LINES);
-
-        //GL.Color(Color.green);
-        //GL.Vertex(position);
-        //GL.Vertex(position + rotation * Vector3.up * size);
-
-        //Debug.DrawLine(position, position + rotation * Vector3.up * size, Color.green, 0, true);
-        //Debug.DrawLine(position, position + rotation * Vector3.right * size, Color.red, 0, true);
-        //Debug.DrawLine(position, position + rotation * Vector3.forward * size, Color.blue, 0, true);
-        //GL.End();
+        DrawLine(position, position + rotation * Vector3.up * size, Color.green);
+        DrawLine(position, position + rotation * Vector3.right * size, Color.red);
+        DrawLine(position, position + rotation * Vector3.forward * size, Color.blue);
     }
 
     public static void DrawLine(Vector3 start, Vector3 end, Color color)
     {
-        return;
-        GL.Begin(GL.LINES);
-
-        lineMat.SetPass(0);
-
-        GL.Color(Color.green);
-        GL.Vertex(start);
-        GL.Vertex(end);
-
-        GL.End();
+        Debug.Log("Is DEV Build: " + Debug.isDebugBuild);
+        Debug.DrawLine(start, end, color);
     }
+    
 }

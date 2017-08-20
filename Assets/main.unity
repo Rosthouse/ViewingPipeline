@@ -368,7 +368,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 400000, guid: 2b127815fd0f2074eae3a0c6a4786d0b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -0.00000009360674
+      value: -2.17
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2b127815fd0f2074eae3a0c6a4786d0b, type: 2}
       propertyPath: m_LocalPosition.y
@@ -736,8 +736,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 359438864}
-  m_LocalRotation: {x: 0.090243734, y: -0.39431027, z: 0.03885888, w: 0.91370976}
-  m_LocalPosition: {x: 10.070309, y: 2.8851702, z: -4.8201165}
+  m_LocalRotation: {x: 0.08260063, y: -0.8119682, z: 0.11845204, w: 0.5655563}
+  m_LocalPosition: {x: 8.401209, y: 3.1929357, z: 6.793947}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -813,7 +813,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 457815664}
-  - component: {fileID: 457815662}
   - component: {fileID: 457815666}
   - component: {fileID: 457815665}
   - component: {fileID: 457815667}
@@ -826,18 +825,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &457815662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 457815661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9b33ae2bad385447a744f9e20af306f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderFrustum: 1
 --- !u!114 &457815663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -859,15 +846,15 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 457815661}
-  m_LocalRotation: {x: 0, y: 0, z: 0.38268343, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalRotation: {x: -0.08047997, y: -0.1942957, z: 0.37412545, w: 0.9032178}
+  m_LocalPosition: {x: 0.110950276, y: 0, z: -0.97613287}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2097666434}
   - {fileID: 732690504}
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
+  m_LocalEulerAnglesHint: {x: 0, y: -24.28, z: 45.000004}
 --- !u!114 &457815665
 MonoBehaviour:
   m_ObjectHideFlags: 0

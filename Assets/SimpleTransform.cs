@@ -94,16 +94,16 @@ public class SimpleTransform : MonoBehaviour {
             //this.transform.localToWorldMatrix
             //Vector3 newPosition = simulationCamera.worldToCameraMatrix.MultiplyPoint(worldObject.transform.position);
             //Debug.Log("New Position: " + newPosition);
-            //worldObject.transform.position = Vector3.zero;
-            //worldObject.transform.rotation = Quaternion.identity;
-            //worldObject.transform.localScale = Vector3.one;
+            worldObject.transform.position = Vector3.zero;
+            worldObject.transform.rotation = Quaternion.identity;
+            worldObject.transform.localScale = Vector3.one;
             mesh.vertices = vertices;
             mesh.RecalculateBounds();
         }
 
-        //this.transform.position = Vector3.zero;
-        //this.transform.rotation = Quaternion.identity;
-        //this.transform.localScale = Vector3.one;
+        this.transform.position = Vector3.zero;
+        this.transform.rotation = Quaternion.identity;
+        this.transform.localScale = Vector3.one;
     }
 
     private Matrix4x4 GetMatrix(Matrix4x4 localToWorld)

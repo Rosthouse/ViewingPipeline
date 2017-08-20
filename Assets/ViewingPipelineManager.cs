@@ -20,7 +20,6 @@ public class ViewingPipelineManager : MonoBehaviour {
         SetUpActions();
         SaveWorldObjects(GameObject.FindGameObjectsWithTag("WorldObject"));
         SetUpGui();
-
         //Camera simulationCamera = GetComponentInChildren<Camera>();
         //simulationCamera.nearClipPlane = cameraProperties.FrontPlane;
         //simulationCamera.farClipPlane = cameraProperties.BackPlane;
@@ -28,6 +27,12 @@ public class ViewingPipelineManager : MonoBehaviour {
         //simulationCamera.targetTexture = image;
     }
 
+    private void OnPostRender()
+    {
+        RenderFrustum.DrawFrustum(GetComponent<Camera>());
+        RenderFrustum.DrawLine(Vector3.zero, Vector3.one * 10, Color.magenta);
+    }
+        
     private void SetUpActions()
     {
         LinkedList<ViewingPipelineAction> delegateList = new LinkedList<ViewingPipelineAction>();
