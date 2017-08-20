@@ -12,6 +12,7 @@ public class ViewingPipelineManager : MonoBehaviour {
     [SerializeField] private Button backwardsButton;
     [SerializeField] private Slider timeSlider;
     [SerializeField] private CameraProperties cameraProperties;
+    [SerializeField] private RenderTexture image;
 
     // Use this for initialization
     void Start()
@@ -24,6 +25,7 @@ public class ViewingPipelineManager : MonoBehaviour {
         //simulationCamera.nearClipPlane = cameraProperties.FrontPlane;
         //simulationCamera.farClipPlane = cameraProperties.BackPlane;
         //simulationCamera.fieldOfView = cameraProperties.FieldOfView;
+        //simulationCamera.targetTexture = image;
     }
 
     private void SetUpActions()
