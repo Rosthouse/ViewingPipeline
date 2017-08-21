@@ -1,18 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class RenderFrustum  {
+public class RenderFrustum : MonoBehaviour {
     
     private static RenderFrustum instance;
     private static Material lineMat;
+    private static GameObject g;
         
     List<Edge> edges;
 
     private struct Edge
     {
-        public Vector3 start;
-        public Vector3 end;
-        public Color color;
+        public readonly Vector3 start;
+        public readonly Vector3 end;
+        public readonly Color color;
+
+        public Edge(Vector3 start, Vector3 end, Color color)
+        {
+            this.start = start;
+            this.end = end;
+            this.color = color;
+        }
+    }
+
+    public static RenderFrustum INSTANCE
+    {
+        get { return instance; }
     }
     
     private static Material LineMaterial
@@ -28,6 +42,8 @@ public class RenderFrustum  {
                 lineMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                 lineMat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
                 lineMat.SetInt("_ZWrite", 0);
+
+                g = new GameObject("g");
             }
             return lineMat;
         }
@@ -74,8 +90,42 @@ public class RenderFrustum  {
 
     public static void DrawLine(Vector3 start, Vector3 end, Color color)
     {
-        Debug.Log("Is DEV Build: " + Debug.isDebugBuild);
-        Debug.DrawLine(start, end, color);
+        INSTANCE.AddEdge(start, end, color);
     }
-    
+
+    private void AddEdge(Vector3 start, Vector3 end, Color color)
+    {
+        this.edges.Add(new Edge(start, end, color));
+    }
+
+    private void Awake()
+    {
+        instance = this;
+        this.edges = new List<Edge>();
+    }
+
+    private void OnPostRender()
+    {
+        LineMaterial.SetPass(0);
+        GL.PushMatrix();
+        GL.LoadProjectionMatrix(Camera.main.projectionMatrix);
+        GL.RenderTargetBarrier();
+        GL.MultMatrix(g.transform.transform.localToWorldMatrix);
+        GL.Begin(GL.LINES);
+
+        foreach(Edge edge in edges)
+        {
+            GL.Color(edge.color);
+            GL.Vertex(edge.start);
+            GL.Vertex(edge.end);
+        }
+       
+        GL.End();
+        GL.PopMatrix();
+
+        edges.Clear();
+    }
+
+
+
 }
