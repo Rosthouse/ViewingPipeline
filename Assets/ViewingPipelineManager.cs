@@ -12,6 +12,7 @@ public class ViewingPipelineManager : MonoBehaviour {
     [SerializeField] private Button backwardsButton;
     [SerializeField] private Slider timeSlider;
     [SerializeField] private CameraProperties cameraProperties;
+    [SerializeField] private RenderTexture image;
 
     // Use this for initialization
     void Start()
@@ -19,20 +20,23 @@ public class ViewingPipelineManager : MonoBehaviour {
         SetUpActions();
         SaveWorldObjects(GameObject.FindGameObjectsWithTag("WorldObject"));
         SetUpGui();
-
         //Camera simulationCamera = GetComponentInChildren<Camera>();
         //simulationCamera.nearClipPlane = cameraProperties.FrontPlane;
         //simulationCamera.farClipPlane = cameraProperties.BackPlane;
         //simulationCamera.fieldOfView = cameraProperties.FieldOfView;
+        //simulationCamera.targetTexture = image;
     }
 
+    private void OnPostRender()
+    {
+        RenderFrustum.DrawFrustum(GetComponent<Camera>());
+    }
+        
     private void SetUpActions()
     {
         LinkedList<ViewingPipelineAction> delegateList = new LinkedList<ViewingPipelineAction>();
         LinkedListNode<ViewingPipelineAction> first = delegateList.AddFirst(GetComponent<WorldToViewCoordinate>());
         delegateList.AddAfter(first, GetComponent<ViewToNormalizedCoordinate>());
-
-
         current = first;
     }
 
