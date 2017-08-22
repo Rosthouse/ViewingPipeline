@@ -58,8 +58,6 @@ public class ViewingPipelineManager : MonoBehaviour {
     {
         current.Value.Forward(relativeWorldObjects, this.animationTime);
         current = current.Next == null ? current: current.Next;
-        
-        //CheckButtonAvaiability();
     }
 
     void Backward()

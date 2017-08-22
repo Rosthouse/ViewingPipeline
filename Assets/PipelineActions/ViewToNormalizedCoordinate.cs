@@ -35,8 +35,7 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
 
     public void Backward(List<WorldObjectTransform> worldObjects, float animationTime)
     {
-        Matrix4x4 P = GL.GetGPUProjectionMatrix(simulationCamera.projectionMatrix, false);
-
+        Matrix4x4 P = simulationCamera.cameraToWorldMatrix;
         foreach (WorldObjectTransform worldObject in worldObjects)
         {
             Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
@@ -48,27 +47,19 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
             mesh.vertices = vertices;
             mesh.RecalculateBounds();
         }
-
         Clipped = false;
     }
 
     public void Forward(List<WorldObjectTransform> worldObjects, float animationTime)
     {
-        Matrix4x4 matrix = Matrix4x4.Perspective(90, 1, -1, 1);
-        float ymax = getYforClipPlane(simulationCamera.farClipPlane);
-        float ymin = getYforClipPlane(simulationCamera.nearClipPlane);
-        //matr
-        //matrix[0, 0] = //TODO;
-        matrix[0, 1] = 0;
-        //matrix[0, 1] = 
-
-        foreach(WorldObjectTransform worldObject in worldObjects)
+        Matrix4x4 P = simulationCamera.cullingMatrix.inverse;//GL.GetGPUProjectionMatrix(simulationCamera.projectionMatrix, false).inverse;
+        foreach (WorldObjectTransform worldObject in worldObjects)
         {
             Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
             Vector3[] vertices = mesh.vertices;
-            for(int i = 0; i < vertices.Length; i++)
+            for (int i = 0; i < vertices.Length; i++)
             {
-                vertices[i] = matrix.MultiplyPoint(vertices[i]);
+                vertices[i] = P.MultiplyPoint(vertices[i]);
             }
             mesh.vertices = vertices;
             mesh.RecalculateBounds();
