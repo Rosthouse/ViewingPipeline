@@ -793,10 +793,9 @@ GameObject:
   m_Component:
   - component: {fileID: 457815664}
   - component: {fileID: 457815666}
-  - component: {fileID: 457815665}
-  - component: {fileID: 457815667}
   - component: {fileID: 457815663}
-  - component: {fileID: 457815668}
+  - component: {fileID: 457815665}
+  - component: {fileID: 457815662}
   m_Layer: 0
   m_Name: VirtualCamera
   m_TagString: Untagged
@@ -804,6 +803,17 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &457815662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 457815661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c02fe7f453abe3948bd880a3dba36c2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &457815663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -841,7 +851,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 457815661}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 162a15aaa5f23854c847e1bef62aaddb, type: 3}
+  m_Script: {fileID: 11500000, guid: 86f9073492f33e94fabe456919766944, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &457815666
@@ -859,55 +869,7 @@ MonoBehaviour:
   forwardButton: {fileID: 847215496}
   backwardsButton: {fileID: 1577491481}
   timeSlider: {fileID: 809305771}
-  cameraProperties: {fileID: 11400000, guid: 333c40030e3b3da4ea87ab3f98526b9c, type: 2}
   image: {fileID: 8400000, guid: 7e2655f6323015c4eab76ffa8c781dc2, type: 2}
---- !u!114 &457815667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 457815661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f752edddbc3ba6d4399e18d2d6314662, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!20 &457815668
-Camera:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 457815661}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 1
-  far clip plane: 8
-  field of view: 60
-  orthographic: 0
-  orthographic size: 5
-  m_Depth: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 7e2655f6323015c4eab76ffa8c781dc2, type: 2}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
 --- !u!1 &526631560
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,9 +1206,11 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 732690504}
+  - component: {fileID: 732690506}
+  - component: {fileID: 732690505}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: SimulationCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1266,6 +1230,53 @@ Transform:
   m_Father: {fileID: 457815664}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &732690505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 732690503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d1a8d1b17e04d54781fde4fa52eca21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!20 &732690506
+Camera:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 732690503}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 8400000, guid: 7e2655f6323015c4eab76ffa8c781dc2, type: 2}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+  m_StereoMirrorMode: 0
 --- !u!1 &735791876
 GameObject:
   m_ObjectHideFlags: 0

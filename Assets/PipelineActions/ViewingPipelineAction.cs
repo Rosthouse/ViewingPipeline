@@ -8,6 +8,11 @@ public struct WorldObjectTransform
     public Vector3 relativePosition;
     public Quaternion originalRotation;
     public Quaternion relativeRotation;
+
+    public Transform transform
+    {
+        get { return worldObject.transform;  }
+    }
 }
 
 public interface ViewingPipelineAction

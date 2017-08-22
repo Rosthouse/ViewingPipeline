@@ -25,7 +25,7 @@ public class WorldToViewCoordinate : MonoBehaviour, ViewingPipelineAction {
         Matrix4x4 V = Matrix4x4.TRS(this.transform.position, this.transform.rotation, this.transform.localScale).inverse;
         foreach (WorldObjectTransform worldObject in relativeWorldObjects)
         {
-            Matrix4x4 M = worldObject.worldObject.transform.localToWorldMatrix;
+            Matrix4x4 M = worldObject.transform.localToWorldMatrix;
             Matrix4x4 MV = V * M;
             Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
             Vector3[] vertices = mesh.vertices;
