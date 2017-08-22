@@ -126,6 +126,40 @@ public class RenderFrustum : MonoBehaviour {
         edges.Clear();
     }
 
+    public static void DrawCube(Vector3 start, Vector3 end, Color color)
+    {
+        float xDiff = end.x - start.x;
+        float yDiff = end.y - start.y;
+        float zDiff = end.z - start.z;
+
+        Vector3 v000 = start;
+        Vector3 v100 = new Vector3(start.x + xDiff, start.y, start.z);
+        Vector3 v110 = new Vector3(start.x + xDiff, start.y + yDiff, start.z);
+
+        Vector3 v010 = new Vector3(start.x, start.y + yDiff, start.z);
+        Vector3 v011 = new Vector3(start.x, start.y + yDiff, start.z + zDiff);
+
+        Vector3 v101 = new Vector3(start.x + xDiff, start.y, start.z + zDiff);
+        Vector3 v001 = new Vector3(start.x, start.y, start.z + zDiff);
 
 
+        Vector3 v111 = end;
+
+        DrawLine(v000, v001, color);
+        DrawLine(v000, v010, color);
+        DrawLine(v000, v100, color);
+
+        DrawLine(v010, v110, color);
+        DrawLine(v010, v011, color);
+
+        DrawLine(v001, v011, color);
+        DrawLine(v001, v101, color);
+
+        DrawLine(v100, v101, color);
+        DrawLine(v100, v110, color);
+
+        DrawLine(v111, v110, color);
+        DrawLine(v111, v101, color);
+        DrawLine(v111, v011, color);
+    }
 }

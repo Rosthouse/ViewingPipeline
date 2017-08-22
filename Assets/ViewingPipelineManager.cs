@@ -30,7 +30,6 @@ public class ViewingPipelineManager : MonoBehaviour {
     private void OnPostRender()
     {
         RenderFrustum.DrawFrustum(GetComponent<Camera>());
-        RenderFrustum.DrawLine(Vector3.zero, Vector3.one * 10, Color.magenta);
     }
         
     private void SetUpActions()
@@ -38,8 +37,6 @@ public class ViewingPipelineManager : MonoBehaviour {
         LinkedList<ViewingPipelineAction> delegateList = new LinkedList<ViewingPipelineAction>();
         LinkedListNode<ViewingPipelineAction> first = delegateList.AddFirst(GetComponent<WorldToViewCoordinate>());
         delegateList.AddAfter(first, GetComponent<ViewToNormalizedCoordinate>());
-
-
         current = first;
     }
 
