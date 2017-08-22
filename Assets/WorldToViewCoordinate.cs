@@ -23,9 +23,7 @@ public class WorldToViewCoordinate : MonoBehaviour, ViewingPipelineAction {
     private void Update()
     {
         if (this.active) { 
-            //Matrix4x4 V = ViewMatrix();
-            Matrix4x4 V = simulationCamera.worldToCameraMatrix;
-
+            Matrix4x4 V  = Matrix4x4.TRS(this.transform.position, this.transform.rotation, this.transform.localScale).inverse;
             foreach (WorldObjectTransform worldObject in relativeWorldObjects)
             {
                 Matrix4x4 M = worldObject.worldObject.transform.localToWorldMatrix;
@@ -38,40 +36,26 @@ public class WorldToViewCoordinate : MonoBehaviour, ViewingPipelineAction {
                 }
                 mesh.vertices = vertices;
             }
-            iTween.MoveUpdate(this.gameObject, Vector3.zero, 5);
-            iTween.RotateUpdate(this.gameObject, Vector3.zero, 5);
-
-            //iTween.MoveTo(this.gameObject, Vector3.zero, animationTime);
-            //iTween.RotateTo(this.gameObject, Vector3.zero, animationTime);
         }
     }
 
     public void Forward(List<WorldObjectTransform> relativeWorldObjects, float animationTime)
     {
-        this.relativeWorldObjects = relativeWorldObjects;
-        this.active = true;
-        ////Matrix4x4 V = ViewMatrix();
-        //Matrix4x4 V = simulationCamera.worldToCameraMatrix;
-
-        //foreach (WorldObjectTransform worldObject in relativeWorldObjects)
-        //{
-        //    Matrix4x4 M = worldObject.worldObject.transform.localToWorldMatrix;
-        //    Matrix4x4 MV = V*M;
-        //    Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
-        //    Vector3[] vertices = mesh.vertices;
-        //    for(int i = 0; i< vertices.Length; i++)
-        //    {
-        //        vertices[i] = MV.MultiplyPoint3x4(vertices[i]);
-        //    }
-        //    mesh.vertices = vertices;
-            
-        //   // Vector3 newOrientation = MV.MultiplyVector(worldObject.originalRotation.eulerAngles);
-
-        //    //iTween.MoveTo(worldObject.worldObject, newPoint, animationTime);
-        //    //iTween.RotateTo(worldObject.worldObject, newOrientation, animationTime);
-        //}
-        //iTween.MoveTo(this.gameObject, Vector3.zero, animationTime);
-        //iTween.RotateTo(this.gameObject, Vector3.zero, animationTime);
+        Matrix4x4 V = Matrix4x4.TRS(this.transform.position, this.transform.rotation, this.transform.localScale).inverse;
+        foreach (WorldObjectTransform worldObject in relativeWorldObjects)
+        {
+            Matrix4x4 M = worldObject.worldObject.transform.localToWorldMatrix;
+            Matrix4x4 MV = V * M;
+            Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
+            Vector3[] vertices = mesh.vertices;
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = MV.MultiplyPoint3x4(vertices[i]);
+            }
+            mesh.vertices = vertices;
+            worldObject.worldObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        }
+        this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);        
     }
 
     private Matrix4x4 ViewMatrix()
