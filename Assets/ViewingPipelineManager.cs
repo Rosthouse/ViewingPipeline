@@ -20,13 +20,13 @@ public class ViewingPipelineManager : MonoBehaviour {
         SaveWorldObjects(GameObject.FindGameObjectsWithTag("WorldObject"));
         SetUpGui();
     }
-
-        
+    
     private void SetUpActions()
     {
         LinkedList<ViewingPipelineAction> delegateList = new LinkedList<ViewingPipelineAction>();
         LinkedListNode<ViewingPipelineAction> first = delegateList.AddFirst(GetComponent<WorldToViewCoordinate>());
-        delegateList.AddAfter(first, GetComponent<ViewToNormalizedCoordinate>());
+        LinkedListNode<ViewingPipelineAction> second = delegateList.AddAfter(first, GetComponent<ViewToNormalizedCoordinate>());
+        delegateList.AddAfter(second, GetComponent<NormalizedToDevice>());
         current = first;
     }
 
@@ -44,12 +44,11 @@ public class ViewingPipelineManager : MonoBehaviour {
 
         foreach (GameObject worldObject in worldObjects)
         {
-            WorldObjectTransform trans = new WorldObjectTransform();
-            trans.worldObject = worldObject;
-            trans.originalPosition = worldObject.transform.position;
-            trans.relativePosition = this.transform.InverseTransformPoint(trans.originalPosition);
-            trans.originalRotation = worldObject.transform.rotation;
-            trans.relativeRotation = trans.originalRotation * Quaternion.Inverse(this.transform.rotation);
+            WorldObjectTransform trans = new WorldObjectTransform(
+                worldObject,
+                this.transform.InverseTransformPoint(worldObject.transform.position),
+                worldObject.transform.rotation * Quaternion.Inverse(this.transform.rotation)
+            );
             relativeWorldObjects.Add(trans);
         }
     }

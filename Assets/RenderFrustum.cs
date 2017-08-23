@@ -174,4 +174,12 @@ public class RenderFrustum : MonoBehaviour {
         DrawLine(start + new Vector3(diff.x, 0, diff.z), end, color);
     }
 
+    public static void DrawText(string text, Vector3 position)
+    {
+        TextMesh textMesh = new TextMesh();
+        textMesh.text = text;
+
+       // Graphics.DrawMesh(textMesh, position, Quaternion.identity, 0);
+    }
+
 }
