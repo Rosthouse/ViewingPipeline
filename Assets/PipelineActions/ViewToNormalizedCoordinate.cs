@@ -7,6 +7,7 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
     private Camera simulationCamera;
     private Boolean clipped;
     private GameObject simulationCameraBody;
+    private Matrix4x4 COORD_TRANSF;
 
     private Boolean Clipped
     {
@@ -20,6 +21,9 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
 
     public void Start()
     {
+
+        COORD_TRANSF = Matrix4x4.identity;
+        COORD_TRANSF[2, 2] = -1;
         simulationCamera = GetComponentInChildren<Camera>();
         clipped = false;
         simulationCameraBody = GameObject.FindGameObjectWithTag("SimulationCamera");
@@ -29,7 +33,7 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
     {
         if (clipped)
         {
-            RenderFrustum.DrawCube(Vector3.zero, Vector3.one, Color.magenta);
+            RenderFrustum.DrawCube(-Vector3.one, Vector3.one, Color.magenta);
         }
     }
 
@@ -38,8 +42,8 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
         Matrix4x4 P = GetCullingMatrix();
         foreach (WorldObjectTransform worldObject in worldObjects)
         {
-            worldObject.Reset();
-            P = SimpleTransform.GetMatrix(worldObject.transform, simulationCamera, true, true, true);
+            //worldObject.Reset();
+            P = simulationCamera.projectionMatrix;
             
             Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
             Vector3[] vertices = mesh.vertices;
@@ -49,18 +53,18 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
             }
             mesh.vertices = vertices;
             mesh.RecalculateBounds();
-            worldObject.ToOrigin();
+            //worldObject.ToOrigin();
         }
         Clipped = false;
     }
 
     public void Forward(List<WorldObjectTransform> worldObjects, float animationTime)
     {
-        Matrix4x4 P = GetCullingMatrix(); // GL.GetGPUProjectionMatrix(simulationCamera.projectionMatrix, false).inverse;
+        Matrix4x4 P = GetCullingMatrix() * COORD_TRANSF; // GL.GetGPUProjectionMatrix(simulationCamera.projectionMatrix, false).inverse;
         foreach (WorldObjectTransform worldObject in worldObjects)
         {
-            worldObject.Reset();
-            P = SimpleTransform.GetMatrix(worldObject.transform, simulationCamera, true, true, true);
+            //worldObject.Reset();
+            //P = SimpleTransform.GetMatrix(worldObject.transform, simulationCamera, true, true, true);
 
             Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
             Vector3[] vertices = mesh.vertices;
@@ -70,18 +74,23 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
             }
             mesh.vertices = vertices;
             mesh.RecalculateBounds();
-            worldObject.ToOrigin();
+            //worldObject.ToOrigin();
         }
         Clipped = true;
-        simulationCamera.orthographic = true;
-        simulationCamera.nearClipPlane = 0;
-        simulationCamera.farClipPlane = 1;
-        simulationCamera.orthographicSize = .5f;
+        //simulationCamera.orthographic = true;
+        //simulationCamera.nearClipPlane = 0;
+        //simulationCamera.farClipPlane = 1;
+        //simulationCamera.orthographicSize = .5f;
     }
 
     private Matrix4x4 GetCullingMatrix()
     {
-        Matrix4x4 P = Matrix4x4.Perspective(simulationCamera.fieldOfView, simulationCamera.aspect, simulationCamera.nearClipPlane, simulationCamera.farClipPlane);
+        Matrix4x4 P = Matrix4x4.Perspective(
+            simulationCamera.fieldOfView, 
+            simulationCamera.aspect, 
+            simulationCamera.nearClipPlane, 
+            simulationCamera.farClipPlane
+            );
         Debug.Log("Culling matrix P: \n" + P);
         return P;
     }

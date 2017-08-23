@@ -2,22 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class CameraProperties  {
+    
+    public readonly float farClip, nearClip;
+    public readonly bool isOrtographic = false;
+    public readonly float fieldOfView;
+    public readonly float aspect;
 
-[CreateAssetMenu(fileName = "cam", menuName = "Camera/Properties", order = 1)]
-public class CameraProperties : ScriptableObject {
+    public CameraProperties() { }
 
-    [SerializeField] private Vector2 max;
-    [SerializeField] private Vector2 min;
-    [SerializeField] private Vector2 uv;
-    [SerializeField] private float d;
-    [SerializeField] private float backPlane, frontPlane;
-    [SerializeField, Range(0, 180)] private int fieldOfView;
+    public CameraProperties(Camera simulationCamera)
+    {
+        this.farClip = simulationCamera.farClipPlane;
+        this.nearClip = simulationCamera.nearClipPlane;
+        this.isOrtographic = simulationCamera.orthographic;
+        this.fieldOfView = simulationCamera.fieldOfView;
+        this.aspect = simulationCamera.aspect;
+    }
 
-    public Vector2 Max  { get  {  return max; } }
-    public Vector2 Min { get { return min; } }
-    public Vector2 Uv { get { return uv; } }
-    public float D { get {  return d; } }
-    public float BackPlane { get { return backPlane; } }
-    public float FrontPlane { get { return frontPlane; } }
-    public int FieldOfView { get { return fieldOfView; } }
+    public CameraProperties(float fieldOfView, float aspect, float nearClip, float farClip, bool isOrtgraphic = false )
+    {
+        this.farClip = farClip;
+        this.nearClip = nearClip;
+        this.isOrtographic = isOrtgraphic;
+        this.fieldOfView = fieldOfView;
+        this.aspect = aspect;
+    }
 }
