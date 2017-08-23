@@ -162,4 +162,16 @@ public class RenderFrustum : MonoBehaviour {
         DrawLine(v111, v101, color);
         DrawLine(v111, v011, color);
     }
+
+
+    public static void DrawRectangle(Vector3 start, Vector3 end, Color color)
+    {
+        Vector3 diff = new Vector3(end.x - start.x, end.y - start.y, end.z - start.z);
+
+        DrawLine(start, start + new Vector3(0, diff.y, 0), color);
+        DrawLine(start, start + new Vector3(diff.x, 0, diff.z), color);
+        DrawLine(start + new Vector3(0, diff.y, 0), end, color);
+        DrawLine(start + new Vector3(diff.x, 0, diff.z), end, color);
+    }
+
 }

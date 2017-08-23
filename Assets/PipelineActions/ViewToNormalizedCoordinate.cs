@@ -35,7 +35,7 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
 
     public void Backward(List<WorldObjectTransform> worldObjects, float animationTime)
     {
-        Matrix4x4 P = simulationCamera.cameraToWorldMatrix;
+        Matrix4x4 P = simulationCamera.cullingMatrix;
         foreach (WorldObjectTransform worldObject in worldObjects)
         {
             Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
@@ -52,7 +52,8 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
 
     public void Forward(List<WorldObjectTransform> worldObjects, float animationTime)
     {
-        Matrix4x4 P = simulationCamera.cullingMatrix.inverse;//GL.GetGPUProjectionMatrix(simulationCamera.projectionMatrix, false).inverse;
+        Matrix4x4 P = GetCullingMatrix(); // GL.GetGPUProjectionMatrix(simulationCamera.projectionMatrix, false).inverse;
+        Debug.Log("Culling matrix: \n" + P);
         foreach (WorldObjectTransform worldObject in worldObjects)
         {
             Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
@@ -67,10 +68,21 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
         Clipped = true;
     }
 
+    private Matrix4x4 GetCullingMatrix()
+    {
+        Matrix4x4 C = Matrix4x4.zero;
+        C[0, 0] = .004f;
+        C[1, 1] = .004f;
+        C[2, 2] = 1.333f;
+        C[2, 3] = -2.666f;
+        C[3, 3] = 1;
+        return C;
+    }
+
     private float getYforClipPlane(float clipPlane)
     {
         float b = (clipPlane * Mathf.Sin(90)) / Mathf.Sin(simulationCamera.fieldOfView / 2);
-        float a = Mathf.Sqrt(Mathf.Pow(clipPlane, 2 ) - Mathf.Pow(b,2 ));
+        float a = Mathf.Sqrt(Mathf.Pow(clipPlane, 2 ) - Mathf.Pow(b,2));
         Vector3 ymax = new Vector3(this.transform.position.x, this.transform.position.y + a, this.transform.position.z + clipPlane);
         return this.transform.position.y + a;
     }
