@@ -35,6 +35,7 @@ public class WorldToViewCoordinate : MonoBehaviour, ViewingPipelineAction {
             }
             mesh.vertices = vertices;
             worldObject.worldObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            mesh.RecalculateBounds();
         }
         this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);        
     }
@@ -58,7 +59,7 @@ public class WorldToViewCoordinate : MonoBehaviour, ViewingPipelineAction {
                 vertices[i] = MV.MultiplyPoint3x4(vertices[i]);
             }
             mesh.vertices = vertices;
-            
+            mesh.RecalculateBounds();
         }
     }
 }
