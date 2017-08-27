@@ -63,9 +63,6 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
         Matrix4x4 P = GetCullingMatrix() * COORD_TRANSF; // GL.GetGPUProjectionMatrix(simulationCamera.projectionMatrix, false).inverse;
         foreach (WorldObjectTransform worldObject in worldObjects)
         {
-            //worldObject.Reset();
-            //P = SimpleTransform.GetMatrix(worldObject.transform, simulationCamera, true, true, true);
-
             Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
             Vector3[] vertices = mesh.vertices;
             for (int i = 0; i < vertices.Length; i++)
@@ -74,13 +71,8 @@ public class ViewToNormalizedCoordinate : MonoBehaviour, ViewingPipelineAction
             }
             mesh.vertices = vertices;
             mesh.RecalculateBounds();
-            //worldObject.ToOrigin();
         }
         Clipped = true;
-        //simulationCamera.orthographic = true;
-        //simulationCamera.nearClipPlane = 0;
-        //simulationCamera.farClipPlane = 1;
-        //simulationCamera.orthographicSize = .5f;
     }
 
     private Matrix4x4 GetCullingMatrix()

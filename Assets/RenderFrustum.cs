@@ -106,6 +106,36 @@ public class RenderFrustum : MonoBehaviour {
 
     private void OnPostRender()
     {
+        if (!Application.isEditor)
+        {
+            GLLineRendering();
+        }
+        
+        edges.Clear();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isEditor && Application.isPlaying)
+        {
+            GizmoLineRendering();
+            edges.Clear();
+        }
+
+    }
+
+    private void GizmoLineRendering()
+    {
+            foreach (Edge edge in edges)
+            {
+                Gizmos.color = edge.color;
+                Gizmos.DrawLine(edge.start, edge.end);
+            }
+        
+    }
+
+    private void GLLineRendering()
+    {
         LineMaterial.SetPass(0);
         GL.PushMatrix();
         GL.LoadProjectionMatrix(Camera.main.projectionMatrix);
@@ -113,17 +143,15 @@ public class RenderFrustum : MonoBehaviour {
         GL.MultMatrix(g.transform.transform.localToWorldMatrix);
         GL.Begin(GL.LINES);
 
-        foreach(Edge edge in edges)
+        foreach (Edge edge in edges)
         {
             GL.Color(edge.color);
             GL.Vertex(edge.start);
             GL.Vertex(edge.end);
         }
-       
+
         GL.End();
         GL.PopMatrix();
-
-        edges.Clear();
     }
 
     public static void DrawCube(Vector3 start, Vector3 end, Color color)
