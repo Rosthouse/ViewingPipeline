@@ -14,11 +14,13 @@ public class CameraValueEditor : MonoBehaviour {
     [SerializeField] private InputField wY;
     [SerializeField] private InputField wW;
     [SerializeField] private InputField wH;
+    [SerializeField] private InputField fov;
 
     [SerializeField] private Toggle isOrtho;
     public void Start()
     {
         focalLenght.text = cameraProperties.D.ToString();
+        fov.text = cameraProperties.FOV.ToString();
         nearClip.text = cameraProperties.dMin.ToString();
         farClip.text = cameraProperties.dMax.ToString();
         wX.text = cameraProperties.Window.position.x.ToString();
@@ -30,6 +32,7 @@ public class CameraValueEditor : MonoBehaviour {
         nearClip.onEndEdit.AddListener(SetNearClip);
         farClip.onEndEdit.AddListener(SetFarClip);
         isOrtho.onValueChanged.AddListener(IsOrthoGraphic);
+        fov.onEndEdit.AddListener(SetFieldOfView);
 
         wX.onEndEdit.AddListener(SetWindowX);
         wY.onEndEdit.AddListener(SetWindowY);
@@ -37,6 +40,10 @@ public class CameraValueEditor : MonoBehaviour {
         wH.onEndEdit.AddListener(SetWindowH);
     }
 
+    private void SetFieldOfView(string f)
+    {
+        cameraProperties.FOV = float.Parse(f);
+    }
 
     public void SetFocalLenght(string f)
     {
