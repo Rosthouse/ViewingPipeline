@@ -4,16 +4,27 @@ using UnityEngine;
 
 public class CameraFrustumRenderer : MonoBehaviour {
 
+    
     private Camera camera;
+    [SerializeField] private Properties cameraProperties;
 
 	// Use this for initialization
 	void Start () {
-        this.camera = GetComponent<Camera>();	
+        if(cameraProperties == null){
+            this.camera = GetComponent<Camera>();	
+        }
 	}
 	
 
-    private void OnPostRender()
+    private void Update()
     {
-        RenderFrustum.DrawFrustum(camera);
+        if(cameraProperties == null){
+            RenderFrustum.DrawFrustum(camera);
+        }
+        else{
+            RenderFrustum.DrawFrustum(cameraProperties.GetNearClipPlane(this.transform), cameraProperties.GetFarClipPlane(this.transform));
+        }
     }
+
+
 }
