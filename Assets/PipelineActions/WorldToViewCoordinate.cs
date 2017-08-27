@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,15 +28,13 @@ public class WorldToViewCoordinate : MonoBehaviour, ViewingPipelineAction {
         {
             Matrix4x4 M = worldObject.transform.localToWorldMatrix;
             Matrix4x4 MV = V * M;
-            Mesh mesh = worldObject.worldObject.GetComponent<MeshFilter>().mesh;
-            Vector3[] vertices = mesh.vertices;
+            Vector3[] vertices = worldObject.Vertices;
             for (int i = 0; i < vertices.Length; i++)
             {
                 vertices[i] = MV.MultiplyPoint3x4(vertices[i]);
             }
-            mesh.vertices = vertices;
+            worldObject.SetVertices(vertices);
             worldObject.worldObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-            mesh.RecalculateBounds();
         }
         this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);        
     }

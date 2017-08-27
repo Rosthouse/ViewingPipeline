@@ -29,7 +29,7 @@ public class SimpleTransform : MonoBehaviour {
     private bool deviced = false;
 
     private Camera simulationCamera;
-    private GameObject[] worldObjects;
+    private List<WorldObjectTransform> worldObjects;
 
     private Vector3 startPosition;
     private Quaternion startRotation;
@@ -37,8 +37,8 @@ public class SimpleTransform : MonoBehaviour {
 
     private static Matrix4x4 COORD_TRANSF;
     private float amount;
-
-
+    private CameraProperties initialCameraProperties;
+    private CameraProperties ortographicProperties = new CameraProperties(45, 1, 0, 1, true);
 
     // Use this for initialization
     void Start () {
@@ -50,7 +50,19 @@ public class SimpleTransform : MonoBehaviour {
         startScale = this.transform.localScale;
 
         simulationCamera = GetComponentInChildren<Camera>();
-        worldObjects = GameObject.FindGameObjectsWithTag("WorldObject");
+        this.initialCameraProperties = new CameraProperties(simulationCamera);
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("WorldObject");
+        worldObjects = new List<WorldObjectTransform>();
+        foreach(GameObject go in gos)
+        {
+            WorldObjectTransform trans = new WorldObjectTransform(
+                go,
+                this.transform.InverseTransformPoint(go.transform.position),
+                go.transform.rotation * Quaternion.Inverse(this.transform.rotation)
+            );
+            worldObjects.Add(trans);
+        }
+
 
         this.amount = 1;
 	}
@@ -82,101 +94,90 @@ public class SimpleTransform : MonoBehaviour {
     public void Forward()
     {
         Debug.Log("Forward");
-        foreach(GameObject worldObject in worldObjects)
-        {
-            Mesh mesh = worldObject.GetComponent<MeshFilter>().mesh;
-            Vector3[] vertices = mesh.vertices;
-            
-            Matrix4x4 transformMatrix =  GetMatrix(worldObject.transform);
 
-            Debug.Log("TransformMatrix:\n" + transformMatrix);
-            for(int i = 0; i < vertices.Length; i++)
+        //Matrix4x4 V = Matrix4x4.TRS(this.transform.position, this.transform.rotation, this.transform.localScale).inverse;
+        //foreach (WorldObjectTransform worldObject in worldObjects)
+        //{
+        //    Matrix4x4 M = worldObject.transform.localToWorldMatrix;
+        //    Matrix4x4 MV = V * M;
+        //    Vector3[] vertices = worldObject.Vertices;
+        //    for (int i = 0; i < vertices.Length; i++)
+        //    {
+        //        vertices[i] = MV.MultiplyPoint3x4(vertices[i]);
+        //    }
+        //    worldObject.SetVertices(vertices);
+        //    worldObject.worldObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        //}
+        //this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        //return;
+
+
+        foreach (WorldObjectTransform worldObject in worldObjects)
+        {
+            Matrix4x4 transformMatrix = GetMatrix(worldObject.transform, simulationCamera, toView, toClip, toDevice);
+            Vector3[] vertices = worldObject.Vertices;
+            for (int i = 0; i < vertices.Length; i++)
             {
-                Vector3 newVertex = transformMatrix.MultiplyPoint3x4(vertices[i]);
-                Debug.Log("Old/new vertex: " + vertices[i] + "/" + newVertex);
-                vertices[i] = newVertex;
+                vertices[i] = transformMatrix.MultiplyPoint3x4(vertices[i]);
             }
-
-            worldObject.transform.position = Vector3.zero;
-            worldObject.transform.rotation = Quaternion.identity;
-            worldObject.transform.localScale = Vector3.one;
-
-            mesh.vertices = vertices;
-            mesh.RecalculateBounds();
+            worldObject.SetVertices(vertices);
+            worldObject.worldObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
 
-        this.transform.position = Vector3.zero;
-        this.transform.rotation = Quaternion.identity;
-        this.transform.localScale = Vector3.one;
+        this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
-    
-    private Matrix4x4 GetMatrix(Transform transform)
-    {
-        Matrix4x4 M = transform.localToWorldMatrix;        
+
+    public static Matrix4x4 GetMatrix(Transform model, Camera simulationCamera, Boolean toView, Boolean toClip, Boolean toDevice)
+    {       
+        Matrix4x4 M = model.localToWorldMatrix;        
         Matrix4x4 V = Matrix4x4.identity;
-        Matrix4x4 C = Matrix4x4.identity;
         Matrix4x4 P = Matrix4x4.identity;
+        Matrix4x4 D = Matrix4x4.identity;
 
         if (toView)
         {
-            V =  Matrix4x4.TRS(this.transform.position, this.transform.rotation, this.transform.localScale).inverse;
-        }
-        if (toClip && !toDevice)
-        {
-            C *= simulationCamera.cullingMatrix;
-        }
-        if(toDevice)
-        {
-            P = getProjectionMatrix(simulationCamera.fieldOfView, simulationCamera.farClipPlane, simulationCamera.nearClipPlane).inverse;
-            P = GL.GetGPUProjectionMatrix(simulationCamera.projectionMatrix, false);
-            deviced = true;
-        }
-        return P * C * V * M;
-    }
-
-    private Matrix4x4 GetInverse(Transform localToWorld)
-    {
-        Matrix4x4 matrix = Matrix4x4.identity;
-        if (toView)
-        {
-            matrix *= simulationCamera.cameraToWorldMatrix;
+            V = Matrix4x4.TRS(simulationCamera.transform.position, simulationCamera.transform.rotation, simulationCamera.transform.localScale).inverse;
         }
         if (toClip)
         {
-            matrix *= simulationCamera.cullingMatrix.inverse;
+            P = Matrix4x4.Perspective(
+                simulationCamera.fieldOfView,
+                simulationCamera.aspect,
+                simulationCamera.nearClipPlane,
+                simulationCamera.farClipPlane
+            ) * COORD_TRANSF; Debug.Log("P PM: \n" + P);
         }
         if (toDevice)
         {
-            matrix *= simulationCamera.worldToCameraMatrix.inverse;
+            D = Matrix4x4.zero;
+            D[0, 0] = 1;
+            D[1, 1] = -1;
+            D[1, 3] = 1;
+            D[2, 2] = 1;
+            D[3, 3] = 1;
         }
-        return matrix;
+        return D * P * V * M;
     }
     
     public void Backwards()
     {
 
-        foreach (GameObject worldObject in worldObjects)
+        foreach (WorldObjectTransform worldObject in worldObjects)
         {
-            Matrix4x4 transformMatrix = GetInverse(worldObject.transform);
-            Mesh mesh = worldObject.GetComponent<MeshFilter>().mesh;
-            Vector3[] vertices = mesh.vertices;
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i] = transformMatrix.MultiplyPoint3x4(vertices[i]);
-                //vertices[i]= worldObject.transform.TransformPoint(vertices[i]);
-            }
-            mesh.vertices = vertices;
+            worldObject.Reset();
         }
 
         this.transform.position = startPosition;
         this.transform.rotation = startRotation;
         this.transform.localScale = startScale;
 
+        this.simulationCamera.ApplyProperties(this.initialCameraProperties);
+
         Debug.Log("Backwards");
     }
 
-    public Matrix4x4 getProjectionMatrix(float fieldOfView, float far, float near)
+    public static Matrix4x4 getProjectionMatrix(float fieldOfView, float far, float near)
     {
         Matrix4x4 P = Matrix4x4.zero;
         P[0, 0] = Mathf.Atan(fieldOfView / 2);
@@ -189,9 +190,15 @@ public class SimpleTransform : MonoBehaviour {
 
     public void Update()
     {
-        if (deviced)
+        if (toClip)
         {
-            RenderFrustum.DrawCube(new Vector3(0, 0, 0), new Vector3(3, 4, 1), Color.yellow);
+            RenderFrustum.DrawCube(-Vector3.one, Vector3.one, Color.magenta);
+        }
+
+
+        if (toDevice)
+        {
+            RenderFrustum.DrawRectangle(new Vector3(0, 0, 0), new Vector3(1, 1, 0), Color.yellow);
         }
     }
 }
