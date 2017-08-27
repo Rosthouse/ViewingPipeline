@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: default_camera_properties
   m_EditorClassIdentifier: 
   d: 1
-  dmin: 5
-  dmax: 40
+  dmin: 1
+  dmax: 10
   window:
     serializedVersion: 2
     x: 0

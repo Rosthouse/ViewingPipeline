@@ -66,7 +66,7 @@ public class Properties : ScriptableObject
 
     public float FOV {
         get { return fov; }
-        set{ fov = value; }
+        set { fov = value; }
     }
 
     public float Aspect {
@@ -85,6 +85,6 @@ public class Properties : ScriptableObject
     {
         float frustumHeight = 2.0f * dMin * Mathf.Tan(FOV * 0.5f * Mathf.Deg2Rad);
         float frustumWidth = frustumHeight * Aspect;
-        return new ClipPlane(t.position + new Vector3(0, 0, dmax), new Vector2(frustumWidth, frustumHeight));
+        return new ClipPlane(t.position + new Vector3(0, 0, dmin), new Vector2(frustumWidth, frustumHeight));
     }
 }

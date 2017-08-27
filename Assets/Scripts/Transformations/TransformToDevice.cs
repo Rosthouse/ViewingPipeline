@@ -11,7 +11,7 @@ public class TransformToDevice : Transformation
         this.window = cameraProperties.Window;
         Matrix4x4 matrix = Matrix4x4.zero;
         matrix[0, 0] = cameraProperties.Window.width;
-        matrix[1, 1] = -cameraProperties.Window.height;
+        matrix[1, 1] = cameraProperties.Window.height;
         matrix[2, 2] = 1;
         matrix[1, 3] = cameraProperties.Window.height;
         matrix[3, 3] = 1;

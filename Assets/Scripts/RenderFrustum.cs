@@ -69,6 +69,34 @@ public class RenderFrustum : MonoBehaviour {
         }
     }
 
+    public static void DrawFrustum(Properties.ClipPlane near, Properties.ClipPlane far)
+    {
+        DrawRectangle(near.min, near.max, Color.red);
+        DrawRectangle(far.min, far.max, Color.blue);
+
+        DrawLine(near.min, far.min, Color.green);
+        DrawLine(near.min + new Vector3(near.size.x, 0, 0), far.min + new Vector3(far.size.x, 0, 0), Color.green);
+        DrawLine(near.min + new Vector3(0, near.size.y, 0), far.min + new Vector3(0, far.size.y, 0), Color.green);
+        DrawLine(near.max, far.max, Color.green);
+
+        /*Vector3[] nearCorners = new Vector3[4]; //Approx'd nearplane corners
+        Vector3[] farCorners = new Vector3[4]; //Approx'd farplane corners
+        Plane[] camPlanes = GeometryUtility.CalculateFrustumPlanes(cam); //get planes from matrix
+
+        Plane temp = camPlanes[1]; camPlanes[1] = camPlanes[2]; camPlanes[2] = temp; //swap [1] and [2] so the order is better for the loop
+        for (int i = 0; i < 4; i++)
+        {
+            nearCorners[i] = Plane3Intersect(camPlanes[4], camPlanes[i], camPlanes[(i + 1) % 4]); //near corners on the created projection matrix
+            farCorners[i] = Plane3Intersect(camPlanes[5], camPlanes[i], camPlanes[(i + 1) % 4]); //far corners on the created projection matrix
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            DrawLine(nearCorners[i], nearCorners[(i + 1) % 4], Color.red); //near corners on the created projection matrix
+            DrawLine(farCorners[i], farCorners[(i + 1) % 4], Color.blue); //far corners on the created projection matrix
+            DrawLine(nearCorners[i], farCorners[i], Color.green); //sides of the created projection matrix
+        }*/
+    }
+
 
 
     public static Vector3 Plane3Intersect(Plane p1, Plane p2, Plane p3)
