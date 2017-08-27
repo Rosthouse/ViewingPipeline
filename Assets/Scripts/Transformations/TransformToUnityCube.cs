@@ -8,11 +8,14 @@ public class TransformToUnityCube : Transformation
   
     public override Matrix4x4 GetMatrix(Properties cameraProperties)
     {
+        Properties.ClipPlane farClip = cameraProperties.GetFarClipPlane(this.transform);
+        Properties.ClipPlane nearClip = cameraProperties.GetNearClipPlane(this.transform);
+
         Matrix4x4 matrix = Matrix4x4.zero;
-        matrix[0, 0] = isOrtho ? 1:cameraProperties.D / (cameraProperties.Window.max.x - cameraProperties.Window.min.x);
-        matrix[0, 2] = getAspect(cameraProperties.Window.max.x, cameraProperties.Window.min.x);
-        matrix[1, 1] = isOrtho ? 1: cameraProperties.D / (cameraProperties.Window.max.y - cameraProperties.Window.min.y);
-        matrix[1, 2] = getAspect(cameraProperties.Window.max.y, cameraProperties.Window.min.y);
+        matrix[0, 0] = isOrtho ? 1 : cameraProperties.D / (farClip.max.x - farClip.min.x);
+        matrix[0, 2] = getAspect(farClip.max.x, farClip.min.x);
+        matrix[1, 1] = isOrtho ? 1: cameraProperties.D / (farClip.max.y - farClip.min.y);
+        matrix[1, 2] = getAspect(farClip.max.y, farClip.min.y);
 
         matrix[2, 2] = cameraProperties.dMax / (cameraProperties.dMax - cameraProperties.dMin);
         matrix[2, 3] = -((cameraProperties.dMax * cameraProperties.dMin) / (cameraProperties.dMax - cameraProperties.dMin));

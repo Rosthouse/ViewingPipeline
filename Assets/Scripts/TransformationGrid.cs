@@ -13,10 +13,13 @@ public class TransformationGrid : MonoBehaviour {
 
 	void Awake () {
 		grid = new Transform[gridResolution * gridResolution * gridResolution];
+        GameObject cubeParent = new GameObject();
+        cubeParent.name = "Cube";
 		for (int i = 0, z = 0; z < gridResolution; z++) {
 			for (int y = 0; y < gridResolution; y++) {
 				for (int x = 0; x < gridResolution; x++, i++) {
 					grid[i] = CreateGridPoint(x, y, z);
+                    grid[i].parent = cubeParent.transform;
 				}
 			}
 		}
