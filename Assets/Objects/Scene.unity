@@ -4393,6 +4393,8 @@ MonoBehaviour:
   isActive: 0
   isOrtho: 0
   swapColumn: 0
+  transpose: 0
+  inverse: 0
   implementation: 1
 --- !u!114 &1669112658
 MonoBehaviour:

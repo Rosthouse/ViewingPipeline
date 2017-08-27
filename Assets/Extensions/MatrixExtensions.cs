@@ -21,9 +21,11 @@ public static class MatrixExtensions
         for(int i = 0; i<4; i++){
             COORD_TRANSF[i, column] = -1;
         }
-        //COORD_TRANSF[]
 
-        return COORD_TRANSF * matrix;
+
+        return COORD_TRANSF* matrix  ;
+
+
     }
 
 }
