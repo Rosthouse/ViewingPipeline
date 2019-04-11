@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 
 
 [CreateAssetMenu(fileName = "prop", menuName = "Transformation/Camera Properties", order = 1)]
