@@ -16,15 +16,14 @@ public class NormalizedToDevice : MonoBehaviour, ViewingPipelineAction
         this.renderTexture = this.simulationCamera.targetTexture;
     }
 
-    public void Update()
+    public void OnGUI()
     {
         if (normalized)
         {
             RenderFrustum.DrawRectangle(-viewPort.max, viewPort.max, Color.cyan);
-
-            //Vector3 origin = Camera.main.ViewportToScreenPoint(new Vector3(0.25F, 0.1F, 0));
-            //Vector3 extent = Camera.main.ViewportToScreenPoint(new Vector3(0.5F, 0.2F, 0));
-           // GUI.DrawTexture(new Rect(origin.x, origin.y, extent.x, extent.y), simulationCamera.targetTexture);
+            Vector3 origin = Camera.main.ViewportToScreenPoint(new Vector3(0.25F, 0.1F, 0));
+            Vector3 extent = Camera.main.ViewportToScreenPoint(new Vector3(0.5F, 0.2F, 0));
+            GUI.DrawTexture(new Rect(origin.x, origin.y, extent.x, extent.y), simulationCamera.targetTexture);
         }
     }
 
@@ -36,9 +35,9 @@ public class NormalizedToDevice : MonoBehaviour, ViewingPipelineAction
     public void Forward(List<WorldObjectTransform> worldObjects, float animationTime)
     {
         Matrix4x4 D = GetDeviceMatrix();
-        foreach(WorldObjectTransform worldObject in worldObjects)
+        foreach (WorldObjectTransform worldObject in worldObjects)
         {
-           worldObject.transform.localScale = new Vector3(1, 1, 0.0001f);
+            worldObject.transform.localScale = new Vector3(1, 1, 0.0001f);
         }
 
         normalized = true;
