@@ -22,9 +22,9 @@ public class NormalizedToDevice : MonoBehaviour, ViewingPipelineAction
         {
             RenderFrustum.DrawRectangle(-viewPort.max, viewPort.max, Color.cyan);
 
-            Vector3 origin = Camera.main.ViewportToScreenPoint(new Vector3(0.25F, 0.1F, 0));
-            Vector3 extent = Camera.main.ViewportToScreenPoint(new Vector3(0.5F, 0.2F, 0));
-            GUI.DrawTexture(new Rect(origin.x, origin.y, extent.x, extent.y), simulationCamera.targetTexture);
+            //Vector3 origin = Camera.main.ViewportToScreenPoint(new Vector3(0.25F, 0.1F, 0));
+            //Vector3 extent = Camera.main.ViewportToScreenPoint(new Vector3(0.5F, 0.2F, 0));
+           // GUI.DrawTexture(new Rect(origin.x, origin.y, extent.x, extent.y), simulationCamera.targetTexture);
         }
     }
 
